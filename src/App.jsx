@@ -1,10 +1,19 @@
-import { Header } from './components/Header'
+import { Header, Post, Sidebar } from './components'
+
+import styles from './styles/App.module.css'
 
 export function App() {
   return (
     <div>
       <Header />
-      <h1>Hello World</h1>
+
+      <div className={styles.wrapper}>
+        <Sidebar />
+        <main>
+          <Post />
+          <Post />
+        </main>
+      </div>
     </div>
   )
 }
