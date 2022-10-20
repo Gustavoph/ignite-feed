@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import ptBR from 'date-fns/locale/pt-BR'
 import { format, formatDistanceToNow } from 'date-fns'
 
@@ -7,9 +7,26 @@ import { Comment } from '../Comment'
 
 import styles from './Post.module.css'
 
-export function Post({ author, publishedAt, content }) {
+interface Author {
+  name: string
+  role: string
+  avatarUrl: string
+}
+
+export interface Content {
+  type: 'paragraph' | 'link'
+  content: string
+}
+
+interface PostProps {
+  author: Author
+  content: Content[]
+  publishedAt: Date
+}
+
+export function Post({ author, publishedAt, content }: PostProps) {
   const [newCommentText, setNewCommentText] = useState('')
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState(['Um comentário legal!'])
 
   const publishedAtFormatted = format(
     publishedAt,
@@ -26,7 +43,7 @@ export function Post({ author, publishedAt, content }) {
 
   const isNewCommentEmpty = newCommentText.length === 0
 
-  function ContentFormatted({ type, content }) {
+  function ContentFormatted({ type, content }: Content) {
     if (type === 'paragraph') {
       return <p>{content}</p>
     } else if (type === 'link') {
@@ -39,26 +56,26 @@ export function Post({ author, publishedAt, content }) {
     return null
   }
 
-  function handleCreateNewComment() {
+  function handleCreateNewComment(event: FormEvent) {
     event.preventDefault()
 
     setComments([...comments, newCommentText])
     setNewCommentText('')
   }
 
-  function handleNewCommentText() {
+  function handleNewCommentText(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('')
     setNewCommentText(event.target.value)
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     const commentsWithoutDeleteOne = comments.filter((comment) => {
       return comment !== commentToDelete
     })
     setComments(commentsWithoutDeleteOne)
   }
 
-  function handleNewCommentInvalid() {
+  function handleNewCommentInvalid(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!')
   }
 
